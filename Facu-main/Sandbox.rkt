@@ -6,3 +6,9 @@
 ; Ejercicio3.  Diseñe la función vol-cubo que recibe la longitud
 ; de la arista de un cubo y calcula su volumen
 ; area de cubo: b^3
+
+(define (vol-cubo l) (if (> l 0) (* l l l)
+                         "No es posible porque: la medida debe ser positiva"))
+
+(check-expect (vol-cubo 2) 8)
+(check-expect (vol-cubo -2) "No es posible porque: la medida debe ser positiva")
