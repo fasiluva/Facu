@@ -7,11 +7,11 @@
 ; de la arista de un cubo y calcula su volumen
 ; area de cubo: b^3
 
-(define (vol-cubo l) (if (> l 0) (* l l l)
-                         "No es posible porque: la medida debe ser positiva"))
+;(define (vol-cubo l) (if (> l 0) (* l l l)
+                         ;"No es posible porque: la medida debe ser positiva"))
 
-(check-expect (vol-cubo 2) 8)
-(check-expect (vol-cubo -2) "No es posible porque: la medida debe ser positiva")
+;(check-expect (vol-cubo 2) 8)
+;(check-expect (vol-cubo -2) "No es posible porque: la medida debe ser positiva")
 
 ; Ejercicio 1. Diseñe una función distancia-origen, que recibe dos
 ; números x e y, devolviendo como resultado la distancia al origen del
@@ -71,5 +71,88 @@ Instituto debe cobrarle a cada uno. Para desarrollar monto-persona es
 conveniente definir ciertas constantes, ya que los precios pueden variar
 con el tiempo.
 
+(define CUOTA 650) ; Valor de la cuota total
+(define DIEZ-PORCIENTO (ceiling (/ CUOTA 10))) ; Valor del 10%
+(define QUINCE-PORCIENTO (ceiling (/ (* CUOTA 15) 100))) ; Valor del 15%
+(define VEINTE-PORCIENTO (ceiling (/ (* CUOTA  20) 100))) ; Valor del 20%
+(define VEINTICINCO-PORCIENTO (ceiling (/ (* CUOTA 25) 100))) ; Valor del 25%
+(define PORCIENTO-LIMITE (ceiling (/ (* CUOTA 35) 100))) ; Valor del porcentaje limite de las promociones (Valor actual: 35%)
 
+(define PERSONAS-2 2) ; Cantidad de personas que se inscriben. Separa entre los valores de las promociones, basta modificarlos para cambiar las promos.
+(define ABONO-2 2) ; Cantidad de meses de abono. Separa entre los valores de las promociones, basta modificarlos para cambiar las promos.
+
+; Ejemplos:
+
+(define (Personas P) ; Para valores naturales, obviamente.
+  (cond [(< P PERSONAS-2) 0]
+        [(= P PERSONAS-2) DIEZ-PORCIENTO]
+        [else VEINTE-PORCIENTO]
+  )
+) 
+
+(define (Abono A) ; Para valores naturales, obviamente.
+  (cond [(< A ABONO-2) 0]
+        [(= A ABONO-2) QUINCE-PORCIENTO]
+        [else VEINTICINCO-PORCIENTO]
+  )
+)
+
+(define (Promocion-total P A) (+ (Personas P) (Abono A))) ; Suma los valores de la promocion segun las personas y los meses de abono
+
+(define (monto-persona P A)
+  (cond [(<= (Promocion-total P A) PORCIENTO-LIMITE) (string-append "Monto: $" (number->string (- CUOTA (Promocion-total P A))))]
+        [else (string-append "Monto: $" (number->string (- CUOTA PORCIENTO-LIMITE)))]
+  )
+)
+
+(check-expect (monto-persona 2 1) "Monto: $585")
+(check-expect (monto-persona 2 2) "Monto: $487")
+(check-expect (monto-persona 5 3) "Monto: $422")
+
+-------------------------------------------------------------------------------------------------------------------------------
 |#
+; Determinacion de los meses 
+(define E-1MES 1)
+(define E-6MESES 6)
+(define E-12MESES 12)
+(define E-60MESES 60)
+(define E-120MESES 120)
+
+; Determinacion de las cotas de los niveles de hemoglobina segun la edad
+(define H-1MES 13)
+(define H-6MESES 10)
+(define H-12MESES 11)
+(define H-60MESES 11.5)
+(define H-120MESES 12.6)
+(define H+120MESES H-1MES) ; H+120MESES = 13
+
+; Determinacion de las constante anemia/no anemia.
+(define ANEMIA #true)
+(define NO-ANEMIA #false)
+
+; Funcion que determina las cotas de hemoglobina segun la edad dada.
+(define (Edad E)
+  (cond
+    [(<= E E-1MES) H-1MES]
+    [(<= E E-6MESES) H-6MESES]
+    [(<= E E-12MESES) H-12MESES]
+    [(<= E E-60MESES) H-60MESES]
+    [(<= E E-120MESES) H-120MESES]
+    [else H+120MESES]
+    )
+  )
+
+; Funcion que determina si se trata de una anemia o no.
+(define (anemia E H)
+  (cond
+    [(<= H (Edad E)) ANEMIA]
+    [else NO-ANEMIA]
+    )
+  )
+
+; Ejemplos corroborados
+(check-expect (anemia 64 13) #false)
+(check-expect (anemia 1 12) #true)
+(check-expect (anemia 200 13) #true)
+
+
