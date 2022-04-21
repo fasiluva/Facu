@@ -3,7 +3,7 @@
 #reader(lib "htdp-beginner-reader.ss" "lang")((modname Sandbox) (read-case-sensitive #t) (teachpacks ((lib "image.rkt" "teachpack" "2htdp") (lib "universe.rkt" "teachpack" "2htdp"))) (htdp-settings #(#t constructor repeating-decimal #f #t none #f ((lib "image.rkt" "teachpack" "2htdp") (lib "universe.rkt" "teachpack" "2htdp")) #f)))
 ; Sandbox:
 ; Ejercicio 4:
-#|
+
 (define LARGO 300) ; Definicion del largo del empty-scene
 (define ANCHO 300) ; Defiinicion del ancho del empty-scene
 (define escenario (empty-scene LARGO ANCHO)) ; Definicion del empty-scene
@@ -34,40 +34,5 @@
   [to-draw circulo]
   [on-tick incrementar]
   [on-key modificar-radio]
-)|#
-
-; Definicion de constantes:
-(define ALTO 300) ; Alto del empty-scene
-(define LARGO 300) ; Largo del empty-scene
-(define ESCENARIO (empty-scene LARGO ALTO))
-(define DELTA 10) ; Movimiento del circulo por tecla presionada
-(define RADIO 10)
-
-; Definicion de funcion principal:
-(define (circulo n) (place-image (circle RADIO "solid" "red") (/ ALTO 2) n
-                                 ESCENARIO))
-; Definicion de funcion on-key
-(define (mover n k) (cond [(key=? k " ") (/ ALTO 2)] ; Primero se pone el reinicio de posicion, sino se bloquearia por la proposicion de abajo.
-                          [(or (< (- n DELTA) RADIO) (> (+ n DELTA) (- ALTO RADIO))) n]
-                          [(key=? k "up") (- n DELTA)]
-                          [(key=? k "down") (+ n DELTA)]
-                          [else n]))
-
-; Definicion de funcion on-mouse
-(define (mouse-handler n x y event) (cond [(string=? event "button-down") y]
-                                          [else n]))
-
-; Defincion de funcion big-bang:
-(big-bang (/ ALTO 2)
-  [to-draw circulo]
-  [on-key mover]
-  [on-mouse mouse-handler]
 )
-
-
-
-
-
-
-
 
