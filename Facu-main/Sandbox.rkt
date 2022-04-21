@@ -64,7 +64,33 @@
   [on-mouse mouse-handler]
 )
 
+(define LARGO 500)
+(define ANCHO 500)
+(define LADO 50)
+(define ESCENARIO (empty-scene LARGO ANCHO))
 
+(define (cuadrado n) (place-image (square LADO "solid" "black") (- LARGO n) (+ 0 n)
+                                  (place-image (square LADO "solid" "yellow") (- LARGO n) (- ANCHO n)
+                                               (place-image (square LADO "solid" "green") n n
+                                                            (place-image (square LADO "solid" "blue") (/ LARGO 2) n
+                                                                         (place-image (square LADO "solid" "red") n (/ ANCHO 2)
+                                                                                      ESCENARIO
+                                                                                      )
+                                                                         )
+                                                            )
+                                               )
+                                  )
+  )
+
+(define (mover n) (cond [(> n (+ LARGO (/ LADO 2))) (- n (+ LARGO (/ LADO 2)))]
+                        [else (+ n 10)]
+                  )
+)
+
+(big-bang (/ LARGO 2)
+  [to-draw cuadrado]
+  [on-tick mover]
+  )
 
 
 
