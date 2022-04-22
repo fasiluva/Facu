@@ -92,7 +92,50 @@
   [on-tick mover]
   )
 
+; Diagrama: Number String -> String
 
+; Definicion de variables de SUPER:
+(define SUPER-CIUDAD 8)
+(define SUPER-RUTA 11)
+
+; Definicion de variables de PREMIUM:
+(define PREMIUM-CIUDAD (+ (/ (* SUPER-CIUDAD 10) 100) SUPER-CIUDAD))
+(define PREMIUM-RUTA (+ (/ (* SUPER-RUTA 10) 100) SUPER-RUTA))
+
+; Definicion de variables de mensaje (-M):
+(define AUTONOMIA-CIUDAD-M "Autonomia en ciudad: ")
+(define AUTONOMIA-RUTA-M "Autonomia en ruta: ")
+(define ERROR "Hubo un error. Pruebe escribir el combustible SOLO EN MAYUSCULAS!.")
+
+; Definicion de funcion autonomia para SUPER:
+(define (autonomia-SUPER tanque) (string-append
+                                   AUTONOMIA-CIUDAD-M
+                                   (number->string (* SUPER-CIUDAD tanque))
+                                   ", "
+                                   AUTONOMIA-RUTA-M
+                                   (number->string (* SUPER-RUTA tanque))))
+
+; Definicion de funcion autonomia para PREMIUM:
+(define (autonomia-PREMIUM tanque) (string-append
+                                   AUTONOMIA-CIUDAD-M
+                                   (number->string (* PREMIUM-CIUDAD tanque))
+                                   ", "
+                                   AUTONOMIA-RUTA-M
+                                   (number->string (* PREMIUM-RUTA tanque))
+                                   )
+  )
+
+; Definicion de funcion principal:
+(define (autonomia tanque combustible) (cond
+                                         [(string=? combustible "SUPER") (autonomia-SUPER tanque)]
+                                         [(string=? combustible "PREMIUM") (autonomia-PREMIUM tanque)]
+                                         [else ERROR]
+                                         )
+  )
+
+(check-expect (autonomia 20 "SUPER") "Autonomia en ciudad: 160, Autonomia en ruta: 220")
+(check-expect (autonomia 20 "PREMIUM") "Autonomia en ciudad: 176, Autonomia en ruta: 242")
+(check-expect (autonomia 15 "premium") ERROR)
 
 
 
