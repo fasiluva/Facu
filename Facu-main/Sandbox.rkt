@@ -3,87 +3,37 @@
 #reader(lib "htdp-beginner-reader.ss" "lang")((modname Sandbox) (read-case-sensitive #t) (teachpacks ((lib "image.rkt" "teachpack" "2htdp") (lib "universe.rkt" "teachpack" "2htdp"))) (htdp-settings #(#t constructor repeating-decimal #f #t none #f ((lib "image.rkt" "teachpack" "2htdp") (lib "universe.rkt" "teachpack" "2htdp")) #f)))
 ; Sandbox:
 
+;Constantes del escenario:
+  (define LARGO 600)
+  (define ALTO 400)
+  (define COLOR "black")
+  (define FONDO (empty-scene LARGO ALTO COLOR))
+;Constantes de las estrellas (E-)
+  (define E-COLOR "white")
+  (define E-LARGO 20)
+  (define estrella (star E-LARGO "solid" E-COLOR))
 
-#|
-(define COLOR "yellow")
-(define ALTO 300)
-(define LARGO 300)
-(define RADIO 50)
-(define ESCENARIO (empty-scene LARGO ALTO))
-
-(define (interpretar n) (place-image (circle RADIO "solid" n) (/ LARGO 2) (/ ALTO 2)
-                                     ESCENARIO))
-
-(define (cambiar n) (cond [(string=? "yellow" n) "red"]
-                          [(string=? "red" n) "green"]
-                          [(string=? "green" n) "blue"]
-                          [else "yellow"]))
-
-(big-bang COLOR
-  [to-draw interpretar]
-  [on-tick cambiar 0.5] ; CANTIDAD DE SEGUNDOS 
+;Funcion que evalua si se puede graficar la estrella
+(define (validacion x y) (cond
+                           [(and
+                             (and (>= x (+ 0 E-LARGO)) (<= x (- LARGO E-LARGO))) ;Si cumple que este entre esos valores de x y de y, grafica
+                             (and (>= y (+ 0 E-LARGO)) (<= y (- ALTO E-LARGO)))
+                             ) #true]
+                           [else #false] ;Si no esta entre los valores, devuelve false para que en (estrellar) pase al else y no devuelva nada
+                           )
   )
 
+;Funcion INTERPRETAR (principal)
+(define (interpretar FONDO) FONDO)
 
+;Funcion ESTRELLAR (on-key)
+(define (estrellar FONDO x y event) (cond [(and (string=? event "button-down") (validacion x y)) (place-image estrella x y FONDO)]
+                                          [else FONDO]))
 
-; (text <string> <font-size> <color>)
-; (place-image/align <image> <x> <y> <x-place> <y-place> <scene>)
-;                      |(figura-geometrica <largo,ancho> <solid> <color>)
-; <x> <y>: coordenadas en basa al escenario sobre el que se posiciona
-; <x-place> <y-place>: que punto de la <image> toma como referencia. Ejemplo: "center" toma el centro de la figura
-
-(define LARGO 800)
-(define ANCHO 60)
-(define ESCENARIO (empty-scene 800 60))
-(define CADENA "")
-;(define last-char-position (string-ith CADENA (- (string-length CADENA) 1)))
-
-(define (interpretar CADENA) (place-image/align (text CADENA 20 "indigo")
-                                                0 0
-                                                "left" "top"
-                                                ESCENARIO))
-(define (escribir CADENA k) (cond [(key=? k "\b")
-                                   (if (> (string-length CADENA) 0)
-                                       (substring CADENA 0 (- (string-length CADENA) 1))
-                                       CADENA)]
-                                  [(string? k) (string-append CADENA k)]
-                                  [else CADENA]))
-
-(big-bang CADENA
+(big-bang FONDO
   [to-draw interpretar]
-  [on-key escribir])
-|#
-
-(define AUTO .)
-(define LARGO 800)
-(define ALTO 150)
-(define ESCENARIO (empty-scene LARGO ALTO))
-(define estadoInicial 0)
-(define estadoCambiante 0)
-
-(define (interpretar movimiento) (place-image/align
-                                  AUTO
-                                  movimiento (/ ALTO 2)
-                                  "right" "center"
-                                  ESCENARIO)
-  )
-
-(define (mover n) (cond [(<= n LARGO) (+ n 3)]
-                        [else n]
-                        )
-  )
-
-(define (reiniciar estadoCambiante k)(cond [(key=? k " ") estadoInicial]
-                                   [else estadoCambiante]))
-
-(define (posicionar estadoCambiante x y evento) (cond [(string=? evento "button-down") x]
-                                                      [else estadoCambiante]))
-
-(big-bang estadoCambiante
-  [to-draw interpretar]
-  [on-tick mover]
-  [on-key reiniciar]
-  [on-mouse posicionar])
+  [on-mouse estrellar]
+    )
 
 
 
