@@ -11,7 +11,7 @@
 ;Constantes de las estrellas (E-)
   (define E-COLOR "white")
   (define E-LARGO 20)
-  (define estrella (star E-LARGO "solid" E-COLOR))
+  (define (estrella x y) (star (/ (* x E-LARGO) LARGO) "solid" E-COLOR))
 
 ;Funcion que evalua si se puede graficar la estrella
 (define (validacion x y) (cond
@@ -27,13 +27,14 @@
 (define (interpretar FONDO) FONDO)
 
 ;Funcion ESTRELLAR (on-key)
-(define (estrellar FONDO x y event) (cond [(and (string=? event "button-down") (validacion x y)) (place-image estrella x y FONDO)]
+(define (estrellar FONDO x y event) (cond [(and (string=? event "button-down") (validacion x y)) (place-image (estrella x y) x y FONDO)]
                                           [else FONDO]))
 
 (big-bang FONDO
   [to-draw interpretar]
   [on-mouse estrellar]
     )
+
 
 
 
