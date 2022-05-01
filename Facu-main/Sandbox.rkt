@@ -3,38 +3,62 @@
 #reader(lib "htdp-beginner-reader.ss" "lang")((modname Sandbox) (read-case-sensitive #t) (teachpacks ((lib "image.rkt" "teachpack" "2htdp") (lib "universe.rkt" "teachpack" "2htdp"))) (htdp-settings #(#t constructor repeating-decimal #f #t none #f ((lib "image.rkt" "teachpack" "2htdp") (lib "universe.rkt" "teachpack" "2htdp")) #f)))
 ; Sandbox:
 
-;Constantes del escenario:
-  (define LARGO 600)
-  (define ALTO 400)
-  (define COLOR "black")
-  (define FONDO (empty-scene LARGO ALTO COLOR))
-;Constantes de las estrellas (E-)
-  (define E-COLOR "white")
-  (define E-LARGO 20)
-  (define (estrella x y) (star (/ (* x E-LARGO) LARGO) "solid" E-COLOR))
+; las figuras geometrias se representan con un string
+; los colores se representaran con un string
+; String String -> image
+; Estado -> Image
 
-;Funcion que evalua si se puede graficar la estrella
-(define (validacion x y) (cond
-                           [(and
-                             (and (>= x (+ 0 E-LARGO)) (<= x (- LARGO E-LARGO))) ;Si cumple que este entre esos valores de x y de y, grafica
-                             (and (>= y (+ 0 E-LARGO)) (<= y (- ALTO E-LARGO)))
-                             ) #true]
-                           [else #false] ;Si no esta entre los valores, devuelve false para que en (estrellar) pase al else y no devuelva nada
-                           )
+; Definicion de constantes de escenario:
+  (define LARGO 500)
+  (define ALTO 500)
+  (define ESCENARIO (empty-scene LARGO ALTO))
+; Definicion de constantes de propiedades de las figuras (F-):
+  (define F-COLOR-GREEN "green")
+  (define F-COLOR-BLUE "blue")
+  (define F-LARGO 100)
+; Definicion de constantes de figuras:
+  (define TV (triangle F-LARGO "solid" F-COLOR-GREEN)); Estado inicial
+  (define TA (triangle F-LARGO "solid" F-COLOR-BLUE))
+  (define CV (circle F-LARGO "solid" F-COLOR-GREEN))
+  (define CA (circle F-LARGO "solid" F-COLOR-BLUE))
+
+; Definicion de funcion cambioVerde:
+(define (cambioVerde TV) (cond [(image=? TV TA) TV]
+                               [(image=? TV CA) CV]
+                               [else TV]))
+
+; Definicion de funcion cambioAzul:
+(define (cambioAzul TV) (cond [(image=? TV TV) TA]
+                               [(image=? TV CV) CA]
+                               [else TV]))
+
+; Definicion de funcion to-draw:
+(define (interpretar e) (place-image
+                         e (/ LARGO 2) (/ ALTO 2)
+                         ESCENARIO))
+
+; Definicion de funcion on-key:
+(define (figura TV k) (cond [(key=? k "v") (cambioVerde TV)]
+                            [(key=? k "a") (cambioAzul TV)]
+                            [else TV]
+                            )
   )
 
-;Funcion INTERPRETAR (principal)
-(define (interpretar FONDO) FONDO)
+; Definicion de funcion on-tick:
+(define (coloreado E) (cond [(image=? E (triangle F-LARGO "solid" F-COLOR-GREEN)) TA]
+                            [(image=? E (triangle F-LARGO "solid" F-COLOR-GREEN)) TV]
+                            [(image=? E (circle F-LARGO "solid" F-COLOR-GREEN)) CA]
+                            [(image=? E (circle F-LARGO "solid" F-COLOR-BLUE)) CV]
+                            [else E]
+                             )
+  )
 
-;Funcion ESTRELLAR (on-key)
-(define (estrellar FONDO x y event) (cond [(and (string=? event "button-down") (validacion x y)) (place-image (estrella x y) x y FONDO)]
-                                          [else FONDO]))
-
-(big-bang FONDO
+; Definicion de funcion big-bang:
+(big-bang TV
   [to-draw interpretar]
-  [on-mouse estrellar]
-    )
-
+  [on-key figura]
+  [on-tick coloreado 1]
+)
 
 
 
