@@ -20,7 +20,7 @@
 (define MARCO
   (empty-scene ANCHO ALTO))
 
-; Estado : (coordenada y , sentido del movimiento)
+; Estado : (direccion, coordenada Y)
 
 ; Representaremos el estado con una cadena, donde el primer
 ; caracter será "b" o "s" y el resto el número correspondiente
@@ -29,7 +29,7 @@
 ; Estado inicial
 (define INICIAL (string-append "s" (number->string POSY-MAX)))
 
-; coordY : Estado -> Number
+; coordenada Y : Estado -> Number
 ; La función obtiene la coordenada Y a partir del estado
 
 (define (coordY s)
@@ -39,16 +39,14 @@
 ; Obtiene la coordenada Y del estado y muestra una imagen
 ; rectangular con la pelota, ubicada en la coordenada x e y.
 
-(define (interpretar s)
-     (place-image
-         (ellipse 50 (+ 50 (/ (coordY s) 9)) "solid" "blue")
-         (/ ANCHO 2) ; coordenada x (es fija)
-         (coordY s) ; coordenada y 
-         MARCO))
+(define (interpretar s) (place-image
+                         (ellipse 50 (+ 50 (/ (coordY s) 9)) "solid" "blue")
+                         (/ ANCHO 2) ; coordenada x (es fija)
+                         (coordY s) ; coordenada y 
+                         MARCO))
 
-; Funciones auxiliares
 ; cambiarPos : Estado String -> Estado
-; Dado un estado y la nuevo posición, cambia el estado
+; Dado un estado y la nueva posición, cambia el estado
 ; con la posición dada.
 (define (cambiarPos s p)
     (string-append p (substring s 1 (string-length s))))
