@@ -37,3 +37,75 @@
   [on-tick mover 0.005]
   )
 
+; make-posn: Number Number -> posn
+; (make-posn a b)
+; posn-x: posn -> Number
+; (posn-x (make-posn a b)) == a
+; posn-y: posn -> Number
+; (posn-y (make-posn a b)) == b
+; posn?
+
+; (ley 1) == posn-x de un make-posn
+; (ley 2) == posn-y de un make-posn
+; (definicion de q) == expandir variable make-posn
+
+#|
+(define (dist-origen puntos) ; Recibe una variable que en la ejecucion se indica que valores tienen los puntos con el make-posn
+  (sqrt (+ (sqr (posn-x puntos)) (sqr (posn-y puntos)))))
+(check-expect (dist-origen (make-posn 3 4)) 5)
+
+(check-expect (simetria (make-posn 2 5)) (make-posn -2 -5))
+(define (simetria puntos) (make-posn (- 0 (posn-x puntos)) (- 0 (posn-y puntos))))
+
+
+(define (distancia puntos1 puntos2)
+  (if (and (posn? puntos1) (posn? puntos2))
+      (sqrt
+        (+ (sqr (- (posn-x puntos2) (posn-x puntos1)))
+           (sqr (- (posn-y puntos2) (posn-y puntos1)))))
+      "Tipos incorrectos para la funcion"))
+(check-expect (distancia (make-posn 0 0) (make-posn 3 4)) 5)
+(check-expect (distancia (make-posn 0 0) "hola") "Tipos incorrectos para la funcion") 
+
+(define ALTURA 800)
+(define LARGO 800)
+(define ESTADO-INICIAL (make-posn (/ LARGO 2) (/ ALTURA 2)))
+(define ESCENARIO (empty-scene LARGO ALTURA))
+(define RADIO 50)
+(define COLOR "lightgreen")
+(define DELTA 60)
+
+(define (interpretar s)
+  (place-image (circle RADIO "solid" COLOR)
+               (posn-x s) (posn-y s)
+               ESCENARIO
+               )
+  )
+
+(define (modificador-posición s k)      
+      (cond [(string=? k "up") (if (> (- (posn-y s) DELTA) RADIO)
+                                    (make-posn (posn-x s) (- (posn-y s) DELTA))
+                                    s)]
+            [(string=? k "down") (if (< (+ (posn-y s) DELTA) (- ALTURA RADIO))
+                                     (make-posn (posn-x s) (+ (posn-y s) DELTA))
+                                     s)]
+            [(string=? k " ") ESTADO-INICIAL]
+            [else s]
+        )
+  )
+
+(define (controlador-mouse s x y event)
+  (cond [(string=? event "button-down")
+         (if (and (>= y RADIO)(<= y (- ALTURA RADIO)))
+             (make-posn x y)
+             s)]
+        [else s]
+    )
+)
+
+(big-bang ESTADO-INICIAL
+  [to-draw interpretar]
+  [on-key modificador-posición]
+  [on-mouse controlador-mouse]
+  )|#
+
