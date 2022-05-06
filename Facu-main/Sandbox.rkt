@@ -9,45 +9,48 @@
 ; (posn-y (make-posn a b)) == b
 ; posn?
 
-(define ALTURA 800)
-(define LARGO 800)
-(define ESTADO-INICIAL (make-posn (/ LARGO 2) (/ ALTURA 2)))
-(define ESCENARIO (empty-scene LARGO ALTURA))
-(define RADIO 50)
-(define COLOR "lightgreen")
-(define DELTA 60)
+; Estado = (make-posn x y)
+; Interpretar: Estado -> Image
 
-(define (interpretar s)
-  (place-image (circle RADIO "solid" COLOR)
-               (posn-x s) (posn-y s)
-               ESCENARIO
-               )
+(define ALTO 500)
+(define LARGO 500)
+(define ESCENARIO (empty-scene LARGO ALTO "black"))
+(define DELTA 30)
+(define RADIO 20)
+(define estadoInicial (make-posn (/ LARGO 2) (/ ALTO 2)))
+
+(define (interpretar n) (place-image (circle RADIO "solid" "grey") (posn-x n) (posn-y n) ESCENARIO))
+
+; Si la nueva posicion en x del posn es menor al largo, grafica
+;(and (< (+ (posn-x n) (- (random DELTA) (random DELTA)) LARGO)) (> (+ (posn-x n) (- (random DELTA) (random DELTA)) LARGO)))
+; Si la nueva posicion en y del posn es menor al alto, grafica
+;(and (< (+ (posn-x n) (- (random DELTA) (random DELTA)) ALTO)) (> (+ (posn-x n) (- (random DELTA) (random DELTA)) ALTO)))
+
+(define (evaluate-new-position-x n) (if (and
+                                         (< (posn-x n) (- LARGO DELTA))
+                                         (> (posn-x n) DELTA)) ; ambas no pueden ser falsas
+                                            (+ (posn-x n) (- (random DELTA) (random DELTA)))
+                                            (if (< (posn-x n) (- LARGO DELTA)) ; si x<480 => x<=delta
+                                                (+ (posn-x n) 1)
+                                                (- (posn-x n) 1) ;sino, x>=480 => x>delta
+                                                )))
+
+(define (evaluate-new-position-y n) (if (and
+                                         (< (posn-y n) (- ALTO DELTA))
+                                         (> (posn-y n) DELTA)) ; ambas no pueden ser falsas
+                                            (+ (posn-y n) (- (random DELTA) (random DELTA)))
+                                            (if (< (posn-y n) (- ALTO DELTA)) ; si x<480 => x<=delta
+                                                (+ (posn-y n) 1)
+                                                (- (posn-y n) 1) ;sino, x>=480 => x>delta
+                                                )))
+
+(define (mover n) (make-posn
+                   (evaluate-new-position-x n)
+                   (evaluate-new-position-y n)
+                   )
   )
 
-(define (modificador-posición s k)      
-      (cond [(string=? k "up") (if (> (- (posn-y s) DELTA) RADIO)
-                                    (make-posn (posn-x s) (- (posn-y s) DELTA))
-                                    s)]
-            [(string=? k "down") (if (< (+ (posn-y s) DELTA) (- ALTURA RADIO))
-                                     (make-posn (posn-x s) (+ (posn-y s) DELTA))
-                                     s)]
-            [(string=? k " ") ESTADO-INICIAL]
-            [else s]
-        )
-  )
-
-(define (controlador-mouse s x y event)
-  (cond [(string=? event "button-down")
-         (if (and (>= y RADIO)(<= y (- ALTURA RADIO)))
-             (make-posn x y)
-             s)]
-        [else s]
-    )
-)
-
-(big-bang ESTADO-INICIAL
+(big-bang estadoInicial
   [to-draw interpretar]
-  [on-key modificador-posición]
-  [on-mouse controlador-mouse]
-  )
+  [on-tick mover 0.05]) ; Estado -> Estado
 
