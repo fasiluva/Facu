@@ -1,6 +1,3 @@
-;; The first three lines of this file were inserted by DrRacket. They record metadata
-;; about the language level of this file in a form that our tools can easily process.
-#reader(lib "htdp-beginner-reader.ss" "lang")((modname Sandbox) (read-case-sensitive #t) (teachpacks ((lib "image.rkt" "teachpack" "2htdp") (lib "universe.rkt" "teachpack" "2htdp"))) (htdp-settings #(#t constructor repeating-decimal #f #t none #f ((lib "image.rkt" "teachpack" "2htdp") (lib "universe.rkt" "teachpack" "2htdp")) #f)))
 ; make-posn: Number Number -> posn
 ; (make-posn a b)
 ; posn-x: posn -> Number
@@ -20,11 +17,6 @@
 (define estadoInicial (make-posn (/ LARGO 2) (/ ALTO 2)))
 
 (define (interpretar n) (place-image (circle RADIO "solid" "grey") (posn-x n) (posn-y n) ESCENARIO))
-
-; Si la nueva posicion en x del posn es menor al largo, grafica
-;(and (< (+ (posn-x n) (- (random DELTA) (random DELTA)) LARGO)) (> (+ (posn-x n) (- (random DELTA) (random DELTA)) LARGO)))
-; Si la nueva posicion en y del posn es menor al alto, grafica
-;(and (< (+ (posn-x n) (- (random DELTA) (random DELTA)) ALTO)) (> (+ (posn-x n) (- (random DELTA) (random DELTA)) ALTO)))
 
 (define (evaluate-new-position-x n) (if (and
                                          (< (posn-x n) (- LARGO DELTA))
@@ -53,4 +45,3 @@
 (big-bang estadoInicial
   [to-draw interpretar]
   [on-tick mover 0.05]) ; Estado -> Estado
-
