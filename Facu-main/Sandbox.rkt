@@ -21,11 +21,6 @@
 
 (define (interpretar n) (place-image (circle RADIO "solid" "grey") (posn-x n) (posn-y n) ESCENARIO))
 
-; Si la nueva posicion en x del posn es menor al largo, grafica
-;(and (< (+ (posn-x n) (- (random DELTA) (random DELTA)) LARGO)) (> (+ (posn-x n) (- (random DELTA) (random DELTA)) LARGO)))
-; Si la nueva posicion en y del posn es menor al alto, grafica
-;(and (< (+ (posn-x n) (- (random DELTA) (random DELTA)) ALTO)) (> (+ (posn-x n) (- (random DELTA) (random DELTA)) ALTO)))
-
 (define (evaluate-new-position-x n) (if (and
                                          (< (posn-x n) (- LARGO DELTA))
                                          (> (posn-x n) DELTA)) ; ambas no pueden ser falsas
