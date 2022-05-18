@@ -154,7 +154,48 @@
 
 (check-expect (venta (make-CasaS "Jose Romero" "Rueda 3456" 120 "C")) "el senior/a Jose Romero recibira 1140000 pesos por la venta de su propiedad ubicada en la calle Rueda 3456")
 
+(define LARGO 500)
+(define ALTO 500)
+(define ESCENARIO (empty-scene LARGO ALTO "black"))
 
+; El estado es un string. La primera letra indica el sentido, la segunda el color.
+(define estadoInicial "Dred")
+
+(define (interpretar estado) (place-image (figura estado) (/ LARGO 2) (/ ALTO 2) ESCENARIO))
+
+(define (cambioColor estado) (cond [(string=? (kolor? estado) "red") (string-append (sentido? estado) "yellow")] ;Dyellow
+                                   [(string=? (kolor? estado) "green") (string-append (sentido? estado) "yellow")] ;Iyellow
+                                   [(string=? (kolor? estado) "yellow")
+                                    (cond [(string=? (sentido? estado) "Q") "Qyellow"]
+                                          [(string=? (sentido? estado) "I") "Dred"]
+                                          [(string=? (sentido? estado) "D") "Igreen"])
+                                    ]
+                                   [else estado]))
+
+(define (detener estado tecla) (cond [(key=? tecla "p") "Qyellow"]
+                                     [(key=? tecla "a") estadoInicial]
+                                     [else estado]))
+(define (clickear estado x y event) (cond [(string=? event "button-down") "Terminar"]
+                                          [else estado]))
+
+(define (terminar estado) (cond [(string=? estado "Terminar") #t]
+                                [else #f]))
+; Funciones auxiliares:
+(define (sentido? estado) (string-ith estado 0))
+(define (kolor? estado) (substring estado 1 (string-length estado)))
+; figura: Estado -> image.
+(define (figura estado) (circle 50 "solid" (kolor? estado)))
+
+(big-bang estadoInicial
+  [to-draw interpretar]
+  [on-tick cambioColor 1]
+  [on-key detener]
+  [on-mouse clickear]
+  [stop-when terminar]
+  )
+
+; con la tecla p se detiene en amarillo. con la a reinicia el ciclo desde rojo
+; si se hace click en al imagen se termina el programa
 
 
 
