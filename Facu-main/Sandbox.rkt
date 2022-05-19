@@ -262,4 +262,43 @@
   [stop-when terminar interpretar] 
   )
 
+; JUEGUITO:
+
+(define-struct Posiciones [a b c d]) 
+(define LARGO 500)
+(define ALTO 500)
+(define RADIO 50)
+(define DELTA 20)
+(define GAMMA RADIO)
+(define TEXTO (text "cabum" 50 "black"))
+(define ESCENARIO (empty-scene LARGO ALTO))
+(define CIRCULO1 (circle RADIO "solid" "red"))
+(define CIRCULO2 (circle RADIO "solid" "blue"))
+
+(define estadoInicial (make-Posiciones (/ LARGO 4) (/ ALTO 2) (* LARGO (/ 3 4)) (/ ALTO 2)))
+
+(define (interpretar estado) (if (boolean=? (terminar estado) #f)
+                                 (place-image CIRCULO1 (Posiciones-a estado) (Posiciones-b estado)
+                                              (place-image CIRCULO2 (Posiciones-c estado) (Posiciones-d estado)
+                                                           ESCENARIO))
+                                 (place-image TEXTO (/ LARGO 2) (/ ALTO 2) ESCENARIO)))
+
+(define (mover estado tecla) (cond [(string=? tecla "a") (make-Posiciones (- (Posiciones-a estado) DELTA) (Posiciones-b estado) (Posiciones-c estado) (Posiciones-d estado))]
+                                   [(string=? tecla "s") (make-Posiciones (Posiciones-a estado) (+ (Posiciones-b estado) DELTA) (Posiciones-c estado) (Posiciones-d estado))]
+                                   [(string=? tecla "d") (make-Posiciones (+ (Posiciones-a estado) DELTA) (Posiciones-b estado) (Posiciones-c estado) (Posiciones-d estado))]
+                                   [(string=? tecla "w") (make-Posiciones (Posiciones-a estado) (- (Posiciones-b estado) DELTA) (Posiciones-c estado) (Posiciones-d estado))]
+                                   [(string=? tecla "left") (make-Posiciones (Posiciones-a estado) (Posiciones-b estado) (- (Posiciones-c estado) DELTA) (Posiciones-d estado))]
+                                   [(string=? tecla "down") (make-Posiciones (Posiciones-a estado) (Posiciones-b estado) (Posiciones-c estado) (+ (Posiciones-d estado) DELTA))]
+                                   [(string=? tecla "right") (make-Posiciones (Posiciones-a estado) (Posiciones-b estado) (+ (Posiciones-c estado) DELTA) (Posiciones-d estado))]
+                                   [(string=? tecla "up") (make-Posiciones (Posiciones-a estado) (Posiciones-b estado) (Posiciones-c estado) (- (Posiciones-d estado) DELTA))]))
+
+(define (dist x1 y1 x2 y2) (- (sqrt (+ (sqr (- x2 x1)) (sqr (- y2 y1)))) RADIO))
+
+(define (terminar estado) (<= (dist (Posiciones-a estado) (Posiciones-b estado) (Posiciones-c estado) (Posiciones-d estado)) GAMMA))
+
+(big-bang estadoInicial
+  [to-draw interpretar]
+  [on-key mover]
+  [stop-when terminar interpretar]
+  )
 
