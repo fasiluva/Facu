@@ -197,6 +197,69 @@
 ; con la tecla p se detiene en amarillo. con la a reinicia el ciclo desde rojo
 ; si se hace click en al imagen se termina el programa
 
+;; The first three lines of this file were inserted by DrRacket. They record metadata
+;; about the language level of this file in a form that our tools can easily process.
+#reader(lib "htdp-beginner-reader.ss" "lang")((modname ASDASD) (read-case-sensitive #t) (teachpacks ((lib "universe.rkt" "teachpack" "2htdp") (lib "image.rkt" "teachpack" "2htdp"))) (htdp-settings #(#t constructor repeating-decimal #f #t none #f ((lib "universe.rkt" "teachpack" "2htdp") (lib "image.rkt" "teachpack" "2htdp")) #f)))
+(define-struct Posicion [x y])
+(define TEXTO (text "MOSCA ATRAPADA" 20 "black"))
+(define LARGO 500)
+(define ALTO 500)
+(define RADIO 20)
+(define MOSCA (circle RADIO "solid" "black"))
+(define ESCENARIO (empty-scene LARGO ALTO))
+(define estadoInicial (make-Posicion (/ LARGO 2) (/ ALTO 2)))
+(define DELTA 20)
+(define GAMMA 50)
+(define LIM-RIGHT (- LARGO RADIO))
+(define LIM-LEFT RADIO)
+(define LIM-UP RADIO)
+(define LIM-DOWN (- ALTO RADIO))
 
+(define (interpretar estado)
+  (if (= (Posicion-x estado) -100)
+      (place-image TEXTO (/ LARGO 2) (/ ALTO 2) ESCENARIO)
+      (place-image MOSCA (Posicion-x estado) (Posicion-y estado) ESCENARIO)))
+
+(define (mover estado)
+  (make-Posicion (movement-x (Posicion-x estado)) (movement-y (Posicion-y estado))))
+
+(define (atrapar estado x y event) (cond [(string=? event "button-down") (atrapada? estado x y)]
+                                         [else estado]))
+
+(define (terminar estado) (and (= (Posicion-x estado) -100) (= (Posicion-y estado) -100)))
+
+; Funciones auxiliares:
+
+(define (dist x1 x2 y1 y2) (sqrt (+ (sqr (- x2 x1)) (sqr (- y2 y1)))))
+
+(define (atrapada? estado x y) (cond [(<= (dist x (Posicion-x estado) y (Posicion-y estado)) GAMMA) (make-Posicion -100 -100)]
+                                     [else estado]))
+
+(define (movement-x x) (if (= (random 2) 0) 
+                         (corroborar-RIGHT x)
+                         (corroborar-LEFT x)))
+(define (movement-y y) (if (= (random 2) 0) 
+                         (corroborar-DOWN y)
+                         (corroborar-UP y)))
+
+(define (corroborar-RIGHT x) (if (<= (+ x DELTA) LIM-RIGHT)
+                                 (+ x DELTA)
+                                 (- x DELTA)))
+(define (corroborar-LEFT x) (if (>= (- x DELTA) LIM-LEFT)
+                                (- x DELTA)
+                                (+ x DELTA)))
+(define (corroborar-DOWN y) (if (<= (+ y DELTA) LIM-DOWN)
+                                (+ y DELTA)
+                                (- y DELTA)))
+(define (corroborar-UP y) (if (>= (- y DELTA) LIM-UP)
+                              (- y DELTA)
+                              (+ y DELTA)))
+
+(big-bang estadoInicial
+  [to-draw interpretar]
+  [on-tick mover]
+  [on-mouse atrapar]
+  [stop-when terminar interpretar] 
+  )
 
 
