@@ -1,116 +1,110 @@
 ;; The first three lines of this file were inserted by DrRacket. They record metadata
 ;; about the language level of this file in a form that our tools can easily process.
-#reader(lib "htdp-beginner-reader.ss" "lang")((modname Sandbox) (read-case-sensitive #t) (teachpacks ((lib "image.rkt" "teachpack" "2htdp") (lib "universe.rkt" "teachpack" "2htdp"))) (htdp-settings #(#t constructor repeating-decimal #f #t none #f ((lib "image.rkt" "teachpack" "2htdp") (lib "universe.rkt" "teachpack" "2htdp")) #f)))
-(define MAX 5)
-(define LISTA1 (list (make-posn 3 5) (make-posn 1 2) (make-posn 0 1) (make-posn 5 6)))
+#reader(lib "htdp-intermediate-reader.ss" "lang")((modname Sandbox) (read-case-sensitive #t) (teachpacks ((lib "universe.rkt" "teachpack" "2htdp") (lib "image.rkt" "teachpack" "2htdp"))) (htdp-settings #(#t constructor repeating-decimal #f #t none #f ((lib "universe.rkt" "teachpack" "2htdp") (lib "image.rkt" "teachpack" "2htdp")) #f)))
+; \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
-(define (dist-puntos p1 p2) (sqrt (+ (sqr (- (posn-x p1) (posn-x p2))) (sqr (- (posn-y p1) (posn-y p2))))))
+; (define (funcion <predicado> <lista>) (<patron> <predicado> <lista>))
 
-(define (dist-origen l a) (cond [(empty? l) a]
-                                [(cons? l) (if (<= (dist-puntos (first l) (make-posn 0 0)) MAX)
-                                               (dist-origen (rest l) (cons (first l) a))
-                                               (dist-origen (rest l) a))]))
+; (filter <predicado> <lista>) = Se usa para filtar los elementos que se desean de
+; una lista. Puede devolver menos cantidad de elementos de una lista, pero nunca mas.
 
-(check-expect (dist-origen LISTA1 empty) (list (make-posn 0 1) (make-posn 1 2)))
+; (map <predicado> <lista>) = Se usa para aplicar una transformacion a los elementos
+; de una lista. Siempre devuelve la misma cantidad de elementos que la lista posee.
 
-;==========================================================
+; (foldr <predicado> <caso base> <lista>) = Se usa para operar todos los elementos de una lista.
+; Devuelve siempre un tipo de dato diferente a una lista, como un Number o String.
 
-(define LISTA2 (list 2 6 5 5 2))
-(define LISTA3 (list 2 1 4 8))
+; \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
-(define (eliminar l n a) (cond [(empty? l) a]
-                             [(cons? l) (if (= (first l) n)
-                                            (eliminar (rest l) n a)
-                                            (eliminar (rest l) n (cons (first l) a)))]))
+; Ejercicio 6. Diseñe la función raices, que dada una lista de números,
+; devuelve una lista con las raíces cuadradas de sus elementos.
 
-(check-expect (eliminar LISTA2 5 '()) (list 2 6 2))
-(check-expect (eliminar LISTA2 2 '()) (list 5 5 6))
-(check-expect (eliminar LISTA3 0 '()) (list 8 4 1 2))
+(define LISTA5 (list 0 1 4 16))
 
-;==========================================================
+(define (raiz x) (sqrt x))
 
-; Ejercicio 22. Diseñe la función cuadrados, que dada una lista de números, devuelva la
-; lista que resulta de elevar al cuadrado cada uno de los elementos de la lista original.
+(define (raices pred l)(map pred l))
 
-(define LISTA4 (list 1 2 3 4 5))
+(check-expect (raices raiz LISTA5) (list 0 1 2 4))
 
-(define (cuadrados l a) (cond [(empty? l) a]
-                              [(cons? l) (cuadrados (rest l) (cons (sqr (first l)) a))]))
+; \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
-(check-expect (cuadrados LISTA4 '()) (list 25 16 9 4 1))
+; Ejercicio 7. Diseñe una función distancias que tome una lista de
+; puntos del plano y devuelva una lista con la distancia al origen de cada
+; uno.
 
-;==========================================================
+(define LISTA6 (list (make-posn 3 4) (make-posn 0 4) (make-posn 12 5))) ; 5 4 13
 
-; Ejercicio 25. Diseñe la función prod, que multiplica los elementos de una lista de
-; números entre sí. Para la lista vacía, devuelve 1.
+(define (dist-origen a) (sqrt (+ (sqr (+ (posn-x a) 0)) (sqr (+ (posn-y a) 0)))))
 
-(define LISTA5 (list 1 2 3))
-(define LISTA6 (list 2 2 2))
+(define (distancias pred l) (map pred l))
 
-(define (prod l) (cond [(empty? l) 1]
-                       [(cons? l) (* (first l) (prod (rest l)))]))
+(check-expect (distancias dist-origen LISTA6) (list 5 4 13))
 
-(check-expect (prod LISTA5) 6)
-(check-expect (prod LISTA6) 8)
-(check-expect (prod (list 2 5 6 4 5 8 0)) 0)
+; \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
-;==========================================================
+; Ejercicio 8. Diseñe una función anchos que tome una lista de imágenes
+; y devuelva una lista con el ancho de cada una
 
-; Ejercicio 27. Diseñe la función maximo que devuelve el máximo de una lista de
-; números naturales. Para la lista vacía, devuelve 0.
+(define LISTA7 (list (circle 5 "solid" "red") (rectangle 10 20 "solid" "blue") (rectangle 20 5 "solid" "grey"))) ; 10 20 5
 
-(define LISTA7 (list 2 5 25 4))
-(define LISTA8 (list 500 501 502 1))
+(define (ancho-img x) (image-height x))
 
-(define (maximo l) (cond [(empty? l) 0]
-                         [(cons? l) (max (first l) (maximo (rest l)))]))
+(define (anchos pred l) (map pred l))
 
-(check-expect (maximo LISTA7) 25)
-(check-expect (maximo LISTA8) 502)
+(check-expect (anchos ancho-img LISTA7) (list 10 20 5))
 
-;==========================================================
+; \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
-(define LISTA9 (list 2 1 1 2))
-(define LISTA10 (list 0 0 1))
+; Ejercicio 13. Diseñe una función prod que multiplica los elementos de
+; una lista de números. Para la lista vacía, devuelve 1.
 
-(define (sumcuad l) (cond [(empty? l) 0]
-                          [(cons? l) (+ (sqr (first l)) (sumcuad (rest l)))]))
+(define LISTA8 (list 1 2 3 4 5)) ; 120
 
-(check-expect (sumcuad LISTA9) 10)
-(check-expect (sumcuad LISTA10) 1)
+;(foldr * 1 LISTA8)
 
-;==========================================================
+; \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
-(define LARGO 500)
-(define ALTO 500)
-(define CIRCULO (circle 30 "solid" "red"))
-(define ESCENARIO (empty-scene LARGO ALTO "black"))
-(define POS (list (make-posn (/ LARGO 4) (/ ALTO 4))
-                  (make-posn (/ LARGO 2) (/ ALTO 2))
-                  (make-posn (/ (* 3 LARGO) 4) (/ (* 3 ALTO) 4))
-                  (make-posn (/ LARGO 4) (/ (* 3 ALTO) 4))))
+; Ejercicio 14. Diseñe una función pegar que dada una lista de strings,
+; devuelve el string que se obtiene de concatenar todos los elementos de
+; la lista.
 
-(define (render estado) (place-image CIRCULO (posn-x estado) (posn-y estado) ESCENARIO))
-(define (changePosition estado k) (cond [(key=? k "1") (newPos POS 1 1)]
-                                        [(key=? k "2") (newPos POS 2 1)]
-                                        [(key=? k "3") (newPos POS 3 1)]
-                                        [(key=? k "4") (newPos POS 4 1)]
-                                        [else estado]))
+(define LISTA9 (list "Mr." "Robot" " es" " una" " serie" " muy" " buena."))
 
-; NumI = Numero de iteraciones (comienza en 1 siempre)
-; Num = Numero que fue presionado
-; l = Lista de posiciones (POS)
-(define (newPos l num numI) (cond [(empty? l) (make-posn 0 0)] ; La linea nunca se evalua
-                                  [(cons? l) (if (= num numI)
-                                                 (first l)
-                                                 (newPos (rest l) num (+ numI 1)))]))
+(define (pegar l) (foldr string-append "" l))
 
-(define estadoInicial (make-posn (/ LARGO 2) (/ ALTO 2)))
+;(pegar LISTA9)
 
-(big-bang estadoInicial
-  [to-draw render]
-  [on-key changePosition]
-  )
+; \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+(define LISTA10 (list 20 21 25 50 1))
+(define LISTA11 (list 1 2 5 9 100))
+
+(define (smax l) (foldr max 0 l))
+
+;(smax LISTA10)
+;(smax LISTA11)
+
+; \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+(check-expect (sumcuad empty) 0)
+(check-expect (sumcuad (list 1 2 3)) 14)
+(check-expect (sumcuad (list -1 -2)) 5)
+
+(define (sumcuad l)
+  (foldr + 0 (map sqr l)))
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -1,3 +1,42 @@
 ;; The first three lines of this file were inserted by DrRacket. They record metadata
 ;; about the language level of this file in a form that our tools can easily process.
-#reader(lib "htdp-beginner-reader.ss" "lang")((modname Sandbox) (read-case-sensitive #t) (teachpacks ((lib "image.rkt" "teachpack" "2htdp") (lib "universe.rkt" "teachpack" "2htdp"))) (htdp-settings #(#t constructor repeating-decimal #f #t none #f ((lib "image.rkt" "teachpack" "2htdp") (lib "universe.rkt" "teachpack" "2htdp")) #f)))
+#reader(lib "htdp-intermediate-reader.ss" "lang")((modname Sandbox) (read-case-sensitive #t) (teachpacks ((lib "universe.rkt" "teachpack" "2htdp"))) (htdp-settings #(#t constructor repeating-decimal #f #t none #f ((lib "universe.rkt" "teachpack" "2htdp")) #f)))
+(define LISTA1 (list 1 2 3))
+(define (mayor0 x) (> x 0))
+(define (filtrar pred l) (filter pred l))
+
+(define (menor5 x) (< (string-length x) 5))
+
+(define (cortas pred l) (filter pred l))
+
+;(check-expect...)
+
+; \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+; Ejercicio 3. Diseñe una función cerca que tome una lista de puntos del
+; plano (representados mediante estructuras posn), y devuelva la lista de
+; aquellos puntos que están a distancia menor a MAX, donde MAX es una
+; constante de su programa.
+
+(define LISTA2 (list (make-posn 3 5) (make-posn 1 2) (make-posn 0 1) (make-posn 5 6)))
+
+(define (distOrigen x) (< (sqrt (+ (sqr (- (posn-x x) 0)) (sqr (- (posn-y x) 0)))) 5))
+
+(define (cerca pred l) (filter pred l))
+
+;(check-expect...)
+
+; \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+(define LISTA3 (list 0 1 2 2 5 2))
+(define LISTA4 (list 0 1 2))
+
+(define (ocurrencia2 x) (not (= x 2)))
+(define (ocurrencia3 x) (not (= x 3)))
+
+(define (eliminar pred l) (filter pred l))
+
+(check-expect (eliminar ocurrencia2 LISTA3) (list 0 1 5))
+(check-expect (eliminar ocurrencia3 LISTA4) (list 0 1 2))
+
+; \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
