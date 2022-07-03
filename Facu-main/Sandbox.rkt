@@ -19,10 +19,14 @@
 ; Ejercicio 6. Diseñe la función raices, que dada una lista de números,
 ; devuelve una lista con las raíces cuadradas de sus elementos.
 
+(define (raices0 l) (cond [(empty? l) '()]
+                          [(cons? l) (cons (sqrt (first l)) (raices0 (rest l)))]))
+
+(check-expect (raices0 (list 0 1 4 16)) (list 0 1 2 4))
+
 (define LISTA5 (list 0 1 4 16))
 
 (define (raiz x) (sqrt x))
-
 (define (raices pred l)(map pred l))
 
 (check-expect (raices raiz LISTA5) (list 0 1 2 4))
@@ -94,8 +98,20 @@
 (define (sumcuad l)
   (foldr + 0 (map sqr l)))
 
+; Ejercicio 11. Diseñe una función longitudes que tome una lista de
+; cadenas y devuelva una lista de números que corresponda con la
+; longitud de cada cadena de la lista original.
 
+(define (longitudes0 l) (cond [(empty? l) empty]
+                              [(cons? l) (cons (string-length (first l)) (longitudes0 (rest l)))]))
 
+(check-expect (longitudes0 (list "hola" "si")) (list 4 2))
+
+(define (predicade x) (string-length x))
+
+(define (longitudes l) (map predicade l))
+
+(check-expect (longitudes (list "hola" "como" "estas?")) (list 4 4 6))
 
 
 
