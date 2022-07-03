@@ -94,6 +94,42 @@
 (define (sumcuad l)
   (foldr + 0 (map sqr l)))
 
+; \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+; Pedido [String Number Number]
+; menu = 1,2,3
+; desert = 1,2
+(define-struct Pedido[name menu desert])
+; La lista gran-pedido-final representa cantidad de menues y postres.
+(define-struct Pedido-final[m1 m2 m3 d1 d2])
+; mi = cant de menues i= 1,2,3
+; di = cant de desert i= 1,2
+
+; ---------------------------------------------------------------------------
+
+;(check-expect (armar-pedido-final (list (make-Pedido "g" 1 2) (make-Pedido "f" 2 2))) (make-Pedido-final 1 1 0 0 2))
+; armar-pedido-final: List(Pedido) -> Struct[Pedido-final]
+(define (armar-pedido-final l)(make-Pedido-final (cantmenu1 l)
+                                                 ;(cantmenu2 l)
+                                                 ;(cantmenu3 l)
+                                                 ;(cantdesert1 l)
+                                                 ;(cantdesert2 l)
+                                                 )
+  )
+
+(define (cantmenu1 l) (cond [(empty? l) 0]
+                            [(cons? l) (if (= (Pedido-menu (first l)) 1); // esta funcion debe repetirse de igual manera con los otros cantmenu(i)
+                                           (+ 1 (cantmenu1 (rest l)));   // y cantdesert(i). 
+                                           (cantmenu1 (rest l)))])) ; 
+
+(check-expect (cantmenu1 (list (make-Pedido "g" 1 2) (make-Pedido "f" 2 2))) 1)
+ 
+; \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+
+
+
+
 
 
 
