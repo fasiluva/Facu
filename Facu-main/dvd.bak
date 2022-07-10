@@ -1,0 +1,34 @@
+;; The first three lines of this file were inserted by DrRacket. They record metadata
+;; about the language level of this file in a form that our tools can easily process.
+#reader(lib "htdp-advanced-reader.ss" "lang")((modname dvd) (read-case-sensitive #t) (teachpacks ((lib "image.rkt" "teachpack" "2htdp") (lib "universe.rkt" "teachpack" "2htdp"))) (htdp-settings #(#t constructor repeating-decimal #t #t none #f ((lib "image.rkt" "teachpack" "2htdp") (lib "universe.rkt" "teachpack" "2htdp")) #f)))
+(define-struct Posicion[x y sentx senty])
+; Posicion[Number Number Boolean Boolean]
+; sentx: #t => Se mueve hacia la derecha
+; senty: #t => Se mueve hacia abajo
+(define LARGO 500)
+(define ALTO 500)
+(define ESCENARIO (empty-scene LARGO ALTO "black"))
+(define RADIO 50)
+(define CIRC (circle RADIO "solid" "red"))
+
+(define (render estado) (place-image CIRC (Posicion-x estado) (Posicion-y estado) ESCENARIO))
+
+(define estadoInicial (make-Posicion (/ LARGO 2) (/ ALTO 2) #t #t))
+
+(define (moveFigure estado) (cond [(= (Posicion-x estado) 0) (derecha estado)]
+                                  [(= (Posicion-x estado) LARGO) (izquierda estado)]
+                                  [(= (Posicion-y estado) 0) (abajo estado)]
+                                  [(= (Posicion-y estado) ALTO) (arriba estado)]
+                                  [(if (boolean=? (Posicion-sentx estado) #t)
+                                       (if (boolean=? (Posicion-senty estado) #t)
+                                           (make-Posicion (+ 1 (Posicion-x estado))
+                                                          (+ 1 (Posicion-y estado))
+                                                          #t #t)
+                                           (make-Posicion (+ 1 (Posicion-x estado))
+                                                          (- (Posicion-y estado) 1)
+                                                          #t #f))
+                                       (if (boolean)))]))
+
+(big-bang estadoInicial
+  [to-draw render]
+  [on-tick moveFigure])
