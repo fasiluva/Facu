@@ -1,12 +1,14 @@
 # C:\Users\USUARIO\Documents\GitHub\Facu\Facu-main\Python
 
-f = open("SandboxFile.txt", "wt")
+import SandboxModule as sm
+import matplotlib.pyplot as plt
+import numpy as np
 
-text_input = str(input("Escribe algo para el archivo: "))
-f.write(text_input)
-f.close()
+sm.makeArray()
 
-f = open("SandboxFile.txt", "rt")
-print(f.read(5))
-f.close()
+xpoints = sm.Dom
+ypoints = sm.Img
+
+plt.plot(xpoints, ypoints)
+plt.show()
 
