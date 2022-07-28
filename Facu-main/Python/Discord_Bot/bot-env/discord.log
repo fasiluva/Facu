@@ -1,0 +1,2 @@
+2022-07-24 14:16:11,000:WARNING:discord.client: PyNaCl is not installed, voice will NOT be supported
+2022-07-24 14:16:11,000:DEBUG:discord.client: on_ready has successfully been registered as an event
