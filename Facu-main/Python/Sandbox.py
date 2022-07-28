@@ -1,14 +1,42 @@
-# C:\Users\USUARIO\Documents\GitHub\Facu\Facu-main\Python
+# cd C:\Users\USUARIO\Documents\GitHub\Facu\Facu-main\Python
 
 import SandboxModule as sm
-import matplotlib.pyplot as plt
-import numpy as np
+import re
+import json
 
-sm.makeArray()
+materials_list = open("SandboxFile.txt", "rt")
 
-xpoints = sm.Dom
-ypoints = sm.Img
+for line in materials_list:
+	mat = re.split(",", line)
+	sm.makeMaterialDict(mat)
 
-plt.plot(xpoints, ypoints)
-plt.show()
+print(sm.materials_dict)
 
+materials_list.close()
+
+json_dumped = json.dumps(sm.materials_dict)
+print(json_dumped)
+
+""" 
+Materials_dict: {
+	"tierra": {
+		Estado: solido
+		explosivo: False
+		presencia: alta
+	}
+	"madera": {
+		Estado: solido
+		explosivo: False
+		presencia: media
+	}
+	"aire": aire,
+	"metal": metal
+}
+
+aire = {
+	"name" = "aire"
+	"estado" = "solido"
+	"explosivo" = False
+	"presencia" = "alta"
+}
+"""

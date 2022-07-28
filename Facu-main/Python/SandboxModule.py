@@ -1,16 +1,11 @@
-Dom, Img = [], []
+materials_dict = {}
 
-def makeArray(): 
-	try:
-		array_Elementx = int(input("Add a point to the Domain: "))
-	except:
-		pass
-	else: 
-		array_Elementy = int(input("Add a point to the Image: "))
-		Dom.append(array_Elementx)
-		Img.append(array_Elementy)
-		del array_Elementy
-		del array_Elementx
-		makeArray()	
-
+def makeMaterialDict(mat):
+	material1 = {
+		"Nombre": mat[0],
+		"Estado": mat[1],
+		"Explosivo": mat[2],
+		"Presencia": mat[3]
+	}
+	materials_dict[mat[0]] = material1
 
