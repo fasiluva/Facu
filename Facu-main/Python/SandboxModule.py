@@ -1,11 +1,11 @@
 materials_dict = {}
 
 def makeMaterialDict(mat):
-	material1 = {
-		"Nombre": mat[0],
-		"Estado": mat[1],
-		"Explosivo": mat[2],
-		"Presencia": mat[3]
+	material_propertys = {
+		"Nombre": mat[0].rstrip(),
+		"Estado": mat[1].rstrip(),
+		"Explosivo": mat[2].rstrip(),
+		"Presencia": mat[3].rstrip()
 	}
-	materials_dict[mat[0]] = material1
+	materials_dict[mat[0]] = material_propertys
 
