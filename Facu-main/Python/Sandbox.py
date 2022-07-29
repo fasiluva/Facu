@@ -10,14 +10,15 @@ for line in materials_list:
 	mat = re.split(",", line)
 	sm.makeMaterialDict(mat)
 
-print(sm.materials_dict)
+print(sm.materials_dict['Tierra']['Presencia'])
 
 materials_list.close()
 
-json_dumped = json.dumps(sm.materials_dict)
-print(json_dumped)
-
 """ 
+Para acceder a un key dentro de un dict dentro de otro dict:
+dict1['dict1.1']['key']
+En el ejemplo de abajo: Materials_dict["madera"]["presencia"] ==> 'Presencia alta'
+
 Materials_dict: {
 	"tierra": {
 		Estado: solido
@@ -39,5 +40,5 @@ aire = {
 	"explosivo" = False
 	"presencia" = "alta"
 }
-"""
+ """
 
